@@ -55,12 +55,47 @@ class MockKVClient implements KVClient {
   }
 }
 
+// VercelKVをKVClientインターフェースに適応させるラッパー
+class VercelKVAdapter implements KVClient {
+  async get<T = unknown>(key: string): Promise<T | null> {
+    return kv.get(key);
+  }
+
+  async set<T = unknown>(key: string, value: T): Promise<void> {
+    await kv.set(key, value);
+  }
+
+  async del(key: string): Promise<void> {
+    await kv.del(key);
+  }
+
+  async keys(pattern: string): Promise<string[]> {
+    return kv.keys(pattern);
+  }
+
+  async hget<T = unknown>(key: string, field: string): Promise<T | null> {
+    return kv.hget(key, field);
+  }
+
+  async hset<T = unknown>(key: string, field: string, value: T): Promise<void> {
+    await kv.hset(key, { [field]: value });
+  }
+
+  async hgetall<T = Record<string, unknown>>(key: string): Promise<T | null> {
+    return kv.hgetall(key) as Promise<T | null>;
+  }
+
+  async hdel(key: string, field: string): Promise<void> {
+    await kv.hdel(key, field);
+  }
+}
+
 // KVクライアントのインスタンスを作成
 function createKVClient(): KVClient {
   // Vercel KVの環境変数が設定されているかチェック
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     console.log('Using Vercel KV');
-    return kv;
+    return new VercelKVAdapter();
   } else {
     console.log('Using Mock KV Client for local development');
     return new MockKVClient();
