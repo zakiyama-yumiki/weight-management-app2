@@ -31,3 +31,27 @@ out/
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Development files
+*.log
+.DS_Store
+.env.example
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# Build artifacts
+build/
+dist/
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
