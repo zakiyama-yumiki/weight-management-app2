@@ -12,7 +12,15 @@ interface KVClient {
 }
 
 class MockKVClient implements KVClient {
+  private static instance: MockKVClient;
   private store: Map<string, any> = new Map();
+
+  public static getInstance(): MockKVClient {
+    if (!MockKVClient.instance) {
+      MockKVClient.instance = new MockKVClient();
+    }
+    return MockKVClient.instance;
+  }
 
   async get<T = unknown>(key: string): Promise<T | null> {
     return this.store.get(key) || null;
@@ -98,8 +106,11 @@ function createKVClient(): KVClient {
     return new VercelKVAdapter();
   } else {
     console.log('Using Mock KV Client for local development');
-    return new MockKVClient();
+    return MockKVClient.getInstance();
   }
 }
 
 export const kvClient = createKVClient();
+
+// 後方互換性のためのエクスポート
+export const getKV = (): KVClient => kvClient;

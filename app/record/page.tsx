@@ -70,15 +70,15 @@ export default function RecordPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">体重記録</h2>
         <p className="text-muted-foreground">
           今日の体重データを記録してください。
         </p>
       </div>
 
-      <Card className="max-w-md">
+      <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle>記録を追加</CardTitle>
           <CardDescription>
@@ -145,11 +145,11 @@ export default function RecordPage() {
               <p className="text-sm text-destructive">{errors.general}</p>
             )}
 
-            <div className="flex gap-2">
-              <Button type="submit" disabled={isLoading}>
+            <div className="flex gap-2 flex-col sm:flex-row">
+              <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? "保存中..." : "記録を保存"}
               </Button>
-              <Button type="button" variant="outline" onClick={() => router.push("/")}>
+              <Button type="button" variant="outline" onClick={() => router.push("/")} className="w-full sm:w-auto">
                 キャンセル
               </Button>
             </div>
