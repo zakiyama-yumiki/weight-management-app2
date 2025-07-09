@@ -55,18 +55,18 @@ export default function HistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
-        <div>
+      <div className="space-y-8 max-w-4xl mx-auto">
+        <div className="text-center">
           <h2 className="text-3xl font-bold mb-4">記録履歴</h2>
         </div>
-        <p>読み込み中...</p>
+        <p className="text-center">読み込み中...</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <div>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">記録履歴</h2>
         <p className="text-muted-foreground">
           これまでの体重記録を確認できます。

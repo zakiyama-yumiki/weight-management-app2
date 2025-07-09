@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import { ja } from "date-fns/locale"
 import { getBMICategory } from "@/lib/calculations"
+import { ProgressCard } from "@/components/ProgressCard"
+import { calculateProgress, getProgressMessage } from "@/lib/progress-utils"
 
 async function checkInitialSetup() {
   try {
@@ -30,6 +32,19 @@ async function getLatestRecord() {
   }
 }
 
+async function getRecordsAndSettings() {
+  try {
+    const [settings, records] = await Promise.all([
+      kvClient.get<UserSettings>(KV_KEYS.USER_SETTINGS),
+      kvClient.get<WeightRecord[]>(KV_KEYS.WEIGHT_RECORDS)
+    ])
+    return { settings, records: records || [] }
+  } catch (error) {
+    console.error("データ取得エラー:", error)
+    return { settings: null, records: [] }
+  }
+}
+
 export default async function Home() {
   const isSetupComplete = await checkInitialSetup()
   
@@ -38,17 +53,40 @@ export default async function Home() {
   }
   
   const latestRecord = await getLatestRecord()
+  const { settings, records } = await getRecordsAndSettings()
+  
+  let progressData = null
+  if (settings && records.length > 0) {
+    const progress = calculateProgress(records, settings)
+    const message = getProgressMessage(progress.progressPercentage, progress.isOnTrack)
+    progressData = { ...progress, message }
+  }
   
   return (
-    <div className="space-y-8">
-      <section>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      <section className="text-center">
         <h2 className="text-3xl font-bold mb-4">ダッシュボード</h2>
         <p className="text-muted-foreground">
           体重管理の進捗状況を確認できます。
         </p>
       </section>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {progressData && settings && (
+        <ProgressCard
+          currentWeight={progressData.currentWeight}
+          targetWeight={settings.targetWeight}
+          progressPercentage={progressData.progressPercentage}
+          remainingWeight={progressData.remainingWeight}
+          weeklyPace={progressData.weeklyPace}
+          monthlyPace={progressData.monthlyPace}
+          expectedCompletionDate={progressData.expectedCompletionDate}
+          daysRemaining={progressData.daysRemaining}
+          isOnTrack={progressData.isOnTrack}
+          message={progressData.message}
+        />
+      )}
+
+      <div className="space-y-6 max-w-2xl mx-auto">
         <Card>
           <CardHeader>
             <CardTitle>最新記録</CardTitle>

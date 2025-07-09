@@ -4,6 +4,9 @@ export interface UserSettings {
   initialWeight: number // kg
   targetWeight: number // kg
   targetDate: string // ISO 8601 date string
+  weeklyWeightLossGoal?: number // kg/week
+  monthlyWeightLossGoal?: number // kg/month
+  targetBMI?: number
   createdAt: string
   updatedAt: string
 }

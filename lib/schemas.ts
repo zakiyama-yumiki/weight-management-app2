@@ -5,6 +5,9 @@ export const userSettingsSchema = z.object({
   initialWeight: z.number().min(30).max(300),
   targetWeight: z.number().min(30).max(300),
   targetDate: z.string().datetime(),
+  weeklyWeightLossGoal: z.number().min(0).max(2).optional(),
+  monthlyWeightLossGoal: z.number().min(0).max(10).optional(),
+  targetBMI: z.number().min(15).max(40).optional(),
 })
 
 export const weightRecordSchema = z.object({
